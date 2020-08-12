@@ -1,0 +1,82 @@
+{#
+
+ takes a list of dicts of the following structure
+ 
+ cases: [{
+    name: string,
+    path: string,
+    diags: list of dicts {
+      name: string
+      freq: string,
+      segments: list of strings
+    }
+ }]
+
+#}
+
+
+<!DOCTYPE html>
+<html><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8"><title>E3SMv1 DECK Diagnostics</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://acme-viewer.llnl.gov/public/w3.css">
+
+<style>
+td, th { border: 2px solid #ddd; }
+a:link { text-decoration: none;
+         color: #3b8cd5; }
+a:visited { text-decoration: none;
+            color: #3b8cd5; }
+a:hover { text-decoration: underline; }
+</style>
+
+</head><body>
+
+<div class="w3-bar w3-pale-green">
+  <span class="w3-bar-item"><strong>E3SMv1 DECK Diagnostics</strong></span>
+  {% for case in cases %}
+    <a class="w3-bar-item w3-button w3-text-black" href="{{case.path}}/index.html">{{case.name}}</a>
+  {% endfor %}
+</div>
+
+<div class="w3-content">
+
+    <h1>{{ cases[0]['name'] }}</h1>
+
+    {% for diag in cases[0]['diags'] %}
+
+      <h2>{{ diag['name'] }}</h2>
+      <table class="w3-table w3-bordered w3-card w3-centered" style="width:40%;">
+        <caption>
+          frequency {{ diag['freq'] }} years
+        </caption>
+        <thead class="w3-teal">
+          <tr>
+            {% for i in range(1, 11) %}
+              <th> {{ i }}</th>
+            {% endfor %}
+          </tr>
+        </thead>
+        <tbody>
+          {% for seg in diag['segments'] %}
+            <tr>
+              {% for subseg in seg %}
+                {% if 'e3sm-diags' in diag['name'] %}
+                  <td><a href="https://acme-viewer.llnl.gov/public/diagnostics/{{ cases[0]['name'] }}/{{ diag['name'] }}/{{ subseg }}/viewer/index.html">{{ subseg }}</a></td>
+                {% else %}
+                  <td><a href="https://acme-viewer.llnl.gov/public/diagnostics/{{ cases[0]['name'] }}/{{ diag['name'] }}/{{ subseg }}/index.html">{{ subseg }}</a></td>
+                {% endif %}
+              {% endfor %}
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    
+    {% endfor %}
+    
+</div>
+{% for i in range(5) %}
+  <br>
+{% endfor %}
+
+</body></html>

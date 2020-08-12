@@ -1,0 +1,73 @@
+#
+#
+# takes a list of dicts of the following structure
+# 
+# cases: [{
+#   name: string,
+#   path: string,
+#   diags: list of dicts {
+#     name: string
+#     freq: string,
+#     segments: list of strings
+#   }
+# }],
+# given_case: int index to this cases info
+#
+
+
+<!DOCTYPE html>
+<html><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8"><title>E3SMv1 DECK Diagnostics</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://acme-viewer.llnl.gov/public/w3.css">
+
+<style>
+td, th { border: 2px solid #ddd; }
+a:link { text-decoration: none;
+         color: #3b8cd5; }
+a:visited { text-decoration: none;
+            color: #3b8cd5; }
+a:hover { text-decoration: underline; }
+</style>
+
+</head><body>
+
+<div class="w3-bar w3-pale-green">
+  <span class="w3-bar-item"><strong>E3SMv1 DECK Diagnostics</strong></span>
+  {% for case in cases %}
+    <a class="w3-bar-item w3-button w3-text-black" href="{{case.path}}/index.html">{{case.name}}</a>
+  {% endfor %}
+</div>
+
+<div class="w3-content">
+
+    <h1>{{ cases[given_case]['name'] }}</h1>
+
+    {% for diag in cases[given_case]['diags'] %}
+
+      <h1>{{ diag['name'] }}</h1>
+      <table class="w3-table w3-bordered w3-card w3-centered" style="width:40%;">
+        <thead class="w3-teal">
+          <tr>
+            <th> {{ diag['freq'] }} </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            {% for seg in diag['segments'] %}
+              {% if diag['name'] == 'e3sm_diags' %}
+                <td rowspan="10"><a href="https://acme-viewer.llnl.gov/public/{{ cases[given_case]['name'] }}/{{ diag['name'] }}/{{ seg }}/viewer/index.html">{{ seg }}</a></td>
+              {% else %}
+                <td rowspan="10"><a href="https://acme-viewer.llnl.gov/public/{{ cases[given_case]['name'] }}/{{ diag['name'] }}/{{ seg }}/index.html">{{ seg }}</a></td>
+              {% endif %}
+            {% endfor %}
+          </tr>
+        </tbody>
+      </table>
+    
+    {% endfor %}
+    
+</div>
+
+
+</body></html>
